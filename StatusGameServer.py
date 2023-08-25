@@ -95,7 +95,7 @@ async def update_server_statuses(channel):
 
 async def update_player_count(channel):
     while True:
-        await asyncio.sleep(10) #<--- Time refresh in seconds
+        await asyncio.sleep(20) #<--- Time refresh in seconds
         for server_id in SERVER_IDS:
             response = get_server_info(server_id)
             if response.status_code == 200:
