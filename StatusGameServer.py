@@ -6,7 +6,7 @@ import asyncio
 
 TOKEN = 'YOU_TOKEN_BOT'
 SERVER_IDS = [23485992] #ID Server Battlemetrics Example: https://www.battlemetrics.com/servers/rust/23485992  <--- ID Server
-CHANNEL_ID = 1231231231231231231 #ID Channel Status
+CHANNEL_ID = 1231231231231231231 #ID Channel Status in your Discord server
 
 intents = discord.Intents.default()
 intents.typing = False
