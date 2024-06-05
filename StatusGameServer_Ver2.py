@@ -49,22 +49,22 @@ async def set_game_status():
                         continue
                     server_info = servers_list[0]
                     players_online = server_info.get("players")
-                print(f"Checking {server} for players online...")
+                #print(f"Checking {server} for players online...")
         else:
             print(f"Error getting server info: {response.status_code}")
 
     if players_online == 0:
         game = "No players online"
-        print(f"New game status: {game}")
-        print(f"Updating game status...")
+        #print(f"New game status: {game}")
+        #print(f"Updating game status...")
         await bot.change_presence(activity=discord.Game(name=game))
-        print("Updated game status!")
+        #print("Updated game status!")
     elif players_online > 0:
         game = f"Playing with {players_online} players"
-        print(f"New game status: {game}")
-        print(f"Updating game status...")
+        #print(f"New game status: {game}")
+        #print(f"Updating game status...")
         await bot.change_presence(activity=discord.Game(name=game))
-        print("Updated game status!")
+        #print("Updated game status!")
 
 async def update_player_count():
     global player_count_prev
