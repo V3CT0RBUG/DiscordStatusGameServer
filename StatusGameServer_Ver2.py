@@ -29,9 +29,72 @@ async def on_ready():
         asyncio.create_task(update_server_statuses(channel))
         asyncio.create_task(update_player_count(channel))
 
+player_count_prev = {}
+
 async def set_game_status():
-    game = discord.Game("con {} jugadores".format(len(bot.users)))
-    await bot.change_presence(activity=game)
+    global player_count_prev
+    game = ""
+    players_online = 0
+    for server in SERVER_IDS if API_TYPE == 'battlemetrics' else STEAM_SERVERS:
+        response = get_server_info(server)
+        if response.status_code == 200:
+            server_data = response.json().get('data', [])
+            if server_data or API_TYPE == 'steam':  # Allow steam response check even if no 'data'
+                if API_TYPE == 'battlemetrics':
+                    server_info = server_data.get('attributes')
+                    players_online = server_info.get("players")
+                else:  # Steam
+                    servers_list = response.json().get('response', {}).get('servers', [])
+                    if not servers_list:
+                        continue
+                    server_info = servers_list[0]
+                    players_online = server_info.get("players")
+                print(f"Checking {server} for players online...")
+        else:
+            print(f"Error getting server info: {response.status_code}")
+
+    if players_online == 0:
+        game = "No players online"
+        print(f"New game status: {game}")
+        print(f"Updating game status...")
+        await bot.change_presence(activity=discord.Game(name=game))
+        print("Updated game status!")
+    elif players_online > 0:
+        game = f"Playing with {players_online} players"
+        print(f"New game status: {game}")
+        print(f"Updating game status...")
+        await bot.change_presence(activity=discord.Game(name=game))
+        print("Updated game status!")
+
+async def update_player_count():
+    global player_count_prev
+    while True:
+        await asyncio.sleep(20)  # Tiempo de refresco en segundos
+        for server in SERVER_IDS if API_TYPE == 'battlemetrics' else STEAM_SERVERS:
+            response = get_server_info(server)
+            if response.status_code == 200:
+                server_data = response.json().get('data', [])
+                if server_data or API_TYPE == 'steam':  # Allow steam response check even if no 'data'
+                    if API_TYPE == 'battlemetrics':
+                        server_info = server_data.get('attributes')
+                        players_online = server_info.get("players")
+                    else:  # Steam
+                        servers_list = response.json().get('response', {}).get('servers', [])
+                        if not servers_list:
+                            continue
+                        server_info = servers_list[0]
+                        players_online = server_info.get("players")
+                    if server in player_count_prev:
+                        if player_count_prev[server] != players_online:
+                            print(f"Player count changed for {server}: {players_online} (from {player_count_prev[server]})")
+                            player_count_prev[server] = players_online
+                            await set_game_status()
+                    else:
+                       # print(f"Initial player count for {server}: {players_online}") # Debugging line
+                        player_count_prev[server] = players_online
+        await set_game_status()
+
+bot.loop.create_task(update_player_count())
 
 async def mostrar_estado_servidor(channel, server_id):
     global estado_messages
