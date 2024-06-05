@@ -20,7 +20,7 @@ https://github.com/V3CT0RBUG/DiscordStatusGameServerBattlemetrics/blob/master/LI
 1. Open your account in https://discord.com/developers/
 2. Clone the repo
    ```sh
-   git clone https://github.com/V3CT0RBUG/DiscordStatusGameServerBattlemetrics.git
+   git clone https://github.com/V3CT0RBUG/DiscordStatusGameServer.git
    ``` 
 3. Edit StatusGameServer.py 
 4. Edit configuration `StatusGameServer.py` or `StatusGameServer_Ver2.py`
