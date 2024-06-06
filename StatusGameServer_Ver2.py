@@ -4,6 +4,7 @@ from discord import Colour
 import requests
 import asyncio
 
+DEBUG = False  #Use "True" to enable Debug Mode or use "False" to disable Debug Mode
 TOKEN = 'YOU_TOKEN_BOT' #Your secret token discord - Get your token in https://discord.com/developers/applications/
 API_TYPE = 'battlemetrics'  # use 'battlemetrics' or 'steam'
 SERVER_IDS = [23485992]  #ID Server Battlemetrics Example: https://www.battlemetrics.com/servers/rust/23485992  <--- ID Server , you can add more than 1 id example: [23485992,5873087,7172408]
@@ -49,22 +50,27 @@ async def set_game_status():
                         continue
                     server_info = servers_list[0]
                     players_online = server_info.get("players")
-                #print(f"Checking {server} for players online...")
+                if DEBUG:    
+                   print(f"Checking {server} for players online...")
         else:
             print(f"Error getting server info: {response.status_code}")
 
     if players_online == 0:
         game = "No players online"
-        #print(f"New game status: {game}")
-        #print(f"Updating game status...")
+        if DEBUG:
+           print(f"New game status: {game}")
+           print(f"Updating game status...")
         await bot.change_presence(activity=discord.Game(name=game))
-        #print("Updated game status!")
+        if DEBUG:
+           print("Updated game status!")
     elif players_online > 0:
         game = f"Playing with {players_online} players"
-        #print(f"New game status: {game}")
-        #print(f"Updating game status...")
+        if DEBUG:
+           print(f"New game status: {game}")
+           print(f"Updating game status...")
         await bot.change_presence(activity=discord.Game(name=game))
-        #print("Updated game status!")
+        if DEBUG:
+           print("Updated game status!")
 
 async def update_player_count():
     global player_count_prev
@@ -90,7 +96,8 @@ async def update_player_count():
                             player_count_prev[server] = players_online
                             await set_game_status()
                     else:
-                       # print(f"Initial player count for {server}: {players_online}") # Debugging line
+                        if DEBUG:
+                           print(f"Initial player count for {server}: {players_online}") # Debugging line
                         player_count_prev[server] = players_online
         await set_game_status()
 
@@ -170,9 +177,11 @@ def get_server_info(server):
         filter_param = f'\\gameaddr\\{ip}:{port}'
         filter_param_escaped = filter_param.replace('\\', '%5C')
         url = f'https://api.steampowered.com/IGameServersService/GetServerList/v1/?key={STEAM_API_KEY}&filter={filter_param_escaped}'
-    # print(f'Requesting server information in URL: {url}')  # Debugging line
+     if DEBUG:   
+        print(f'Requesting server information in URL: {url}')  # Debugging line
     response = requests.get(url)
-    # print(f'API Response: {response.text}')  # Debugging line
+     if DEBUG:
+     print(f'API Response: {response.text}')  # Debugging line
     return response
 
 async def update_server_statuses(channel):
@@ -220,8 +229,43 @@ async def update_player_count(channel):
                 await channel.send(f'An error occurred while trying to get information from the server with ID: {server}.')
 
 @bot.command()
-async def estado(ctx):
-    await mostrar_estados_servidores(ctx.channel)
+async def players(ctx):
+    await mostrar_estado_servidores(ctx.channel)
+
+async def mostrar_estado_servidores(channel):
+    servers = SERVER_IDS if API_TYPE == 'battlemetrics' else STEAM_SERVERS
+    for server in servers:
+        response = get_server_info(server)
+        if response.status_code == 200:
+            server_data = response.json().get('data', [])
+            if server_data or API_TYPE == 'steam':  # Allow steam response check even if no 'data'
+                if API_TYPE == 'battlemetrics':
+                    server_info = server_data.get('attributes')
+                    players_online = server_info.get("players")
+                else:  # Steam
+                    servers_list = response.json().get('response', {}).get('servers', [])
+                    if not servers_list:
+                        await channel.send(f'Could not get information from Steam server with IP: {server[0]} and port: {server[1]}.')
+                        return
+                    server_info = servers_list[0]
+                    players_online = server_info.get("players")
+
+                await channel.send(f'**Server {server}: {players_online} players online**')
+            else:
+                await channel.send(f'Could not get information from server with ID: {server}.')
+        else:
+            await channel.send(f'An error occurred while trying to get information from the server with ID: {server}.')
+
+@bot.command()
+async def server(ctx):
+    if not ctx.guild:
+        await ctx.send('Este comando solo puede ser utilizado en un canal de servidor.')
+    else:
+        try:
+            server_id = ctx.guild.id
+            await mostrar_estado_servidor(ctx.channel, server_id)
+        except Exception as e:
+            await ctx.send(f'Error: {str(e)}')
 
 async def mostrar_estados_servidores(channel):
     servers = SERVER_IDS if API_TYPE == 'battlemetrics' else STEAM_SERVERS
