@@ -40,13 +40,7 @@ https://github.com/V3CT0RBUG/DiscordStatusGameServerBattlemetrics/blob/master/LI
    py StatusGameServer_Ver2.py
    ```
 ### Debuggin
-1. Check the commented lines
+1. Change False to True to enable debug mode
 ```python
-    # print(f'Requesting server information in URL: {url}')  # Debugging line 110
-    # print(f'API Response: {response.text}')  # Debugging line 112
+    DEBUG = False
    ```
-2. Uncomment lines
-```python
-    print(f'Requesting server information in URL: {url}')  # Debugging line 110
-    print(f'API Response: {response.text}')  # Debugging line 112
-```
