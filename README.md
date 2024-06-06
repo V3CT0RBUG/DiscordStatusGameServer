@@ -25,6 +25,7 @@ https://github.com/V3CT0RBUG/DiscordStatusGameServerBattlemetrics/blob/master/LI
 3. Edit StatusGameServer.py 
 4. Edit configuration `StatusGameServer.py` or `StatusGameServer_Ver2.py`
    ```python
+   DEBUG = False  #Use "True" to enable Debug Mode or use "False" to disable Debug Mode
    TOKEN = 'YOU_TOKEN_BOT' #Your secret token discord - Get your token in https://discord.com/developers/applications/
    API_TYPE = 'battlemetrics'  # use 'battlemetrics' or 'steam'
    SERVER_IDS = [23485992]  #ID Server Battlemetrics Example: https://www.battlemetrics.com/servers/rust/23485992  <--- ID Server , you can add more than 1 id example: [23485992,5873087,7172408]
