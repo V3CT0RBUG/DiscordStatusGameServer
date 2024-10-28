@@ -23,21 +23,20 @@ https://github.com/V3CT0RBUG/DiscordStatusGameServerBattlemetrics/blob/master/LI
    git clone https://github.com/V3CT0RBUG/DiscordStatusGameServer.git
    ``` 
 3. Edit StatusGameServer.py 
-4. Edit configuration `StatusGameServer.py` or `StatusGameServer_Ver2.py`
+4. Edit configuration `StatusGameServer.py`
    ```python
-   DEBUG = False  #Use "True" to enable Debug Mode or use "False" to disable Debug Mode
-   TOKEN = 'YOU_TOKEN_BOT' #Your secret token discord - Get your token in https://discord.com/developers/applications/
-   API_TYPE = 'battlemetrics'  # use 'battlemetrics' or 'steam'
-   SERVER_IDS = [23485992]  #ID Server Battlemetrics Example: https://www.battlemetrics.com/servers/rust/23485992  <--- ID Server , you can add more than 1 id example: [23485992,5873087,7172408]
-   STEAM_SERVERS = [('127.0.0.1', 28015)]  #IP and PORT your server in steamgameserverlist
-   CHANNEL_ID = 1231231231231231231  #ID Channel Status in your Discord server
-   STEAM_API_KEY = 'YOU_STEAM_APIKEY' #Your secret SteamApiKey - Get your api in https://steamcommunity.com/dev/apikey
+   DEBUG = True  # Use "True" to enable Debug Mode or "False" to disable Debug Mode
+   TOKEN = 'YOUR_BOT_TOKEN'  # Your Discord bot token - Get it from https://discord.com/developers/applications/
+   API_TYPE = 'steam'  # Use 'battlemetrics', 'steam', 'minecraft_java' or 'minecraft_bedrock'
+   SERVER_IDS = [23485992]  # BattleMetrics Server ID Example: https://www.battlemetrics.com/servers/rust/23485992
+   IP_SERVERS = [('127.0.0.1', 25562)]  # IP and PORT of your server in Steam Game Server List or Minecraft server
+   CHANNEL_ID = 1231231231231231231  # ID of the status channel in your Discord server
+   STEAM_API_KEY = 'YOUR_STEAM_API_KEY'  # Your Steam API Key - Get it from https://steamcommunity.com/dev/apikey
+
    ```
 5. Start your bot
    ```python
    py StatusGameServer.py
-   #or
-   py StatusGameServer_Ver2.py
    ```
 ### Debuggin
 1. Change False to True to enable debug mode
